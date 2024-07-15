@@ -15,18 +15,20 @@ int getNextNumber(const char** ptr, const char* delimiters) {
     return number;
 }
 
-int sumNumbers(const char* ptr, const char* delimiters, int* negCount, int negatives[]) {
-    int sum = 0;
+void addNumber(int number, int* sum, int negatives[], int* negCount) {
+    if (number < 0) {
+        negatives[(*negCount)++] = number;
+    } else if (number <= 1000) {
+        *sum += number;
+    }
+}
 
+int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* negCount) {
+    int sum = 0;
     while (*ptr) {
         int number = getNextNumber(&ptr, delimiters);
-        if (number < 0) {
-            negatives[(*negCount)++] = number;
-        } else if (number <= 1000) {
-            sum += number;
-        }
+        addNumber(number, &sum, negatives, negCount);
     }
-
     return sum;
 }
 
@@ -54,7 +56,7 @@ int add(const char* numbers) {
 
     int negatives[100];
     int negCount = 0;
-    int sum = sumNumbers(ptr, delimiters, &negCount, negatives);
+    int sum = sumNumbers(ptr, delimiters, negatives, &negCount);
 
     handleNegativeNumbers(negatives, negCount);
 
