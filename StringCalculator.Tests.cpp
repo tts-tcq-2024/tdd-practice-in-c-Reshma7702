@@ -38,7 +38,7 @@ TEST(StringCalculatorAddTests, IgnoreNumbersGreaterThan1000) {
 
 TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter) {
     int expectedresult = 3;
-    const char* input = "//;\n1;2";
+    const char* input = "//;\n1,2";
     int result = add(input);
     ASSERT_EQ(result, expectedresult);
 }
@@ -48,8 +48,7 @@ TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter_EmptyString) {
     add(input);
    
 }
-TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter_1) {
-   
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter_Negativevalues) {
     const char* input = "-1,2";
     add(input);
 
