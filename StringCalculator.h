@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+
 // Helper function to set default delimiters
 void setDefaultDelimiters(char* delimiter) {
     strcpy(delimiter, ",\n");
