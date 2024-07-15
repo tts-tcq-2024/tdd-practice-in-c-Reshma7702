@@ -7,15 +7,18 @@ void setDefaultDelimiters(char* delimiter) {
     strcpy(delimiter, ",\n");
 }
 
-// Helper function to check and parse custom delimiter
-int parseCustomDelimiter(const char* numbers, char* delimiter) {
-    if (numbers[0] == '/' && numbers[1] == '/') {
-        const char* end = strchr(numbers, '\n');
-        if (end != NULL) {
-            strncpy(delimiter, numbers + 2, end - numbers - 2);
-            delimiter[end - numbers - 2] = '\0';
-            return end - numbers + 1;
-        }
+// Helper function to check if custom delimiter is present
+int hasCustomDelimiter(const char* numbers) {
+    return numbers[0] == '/' && numbers[1] == '/';
+}
+
+// Helper function to extract custom delimiter
+int extractCustomDelimiter(const char* numbers, char* delimiter) {
+    const char* end = strchr(numbers, '\n');
+    if (end != NULL) {
+        strncpy(delimiter, numbers + 2, end - numbers - 2);
+        delimiter[end - numbers - 2] = '\0';
+        return end - numbers + 1;
     }
     return 0;
 }
@@ -23,7 +26,10 @@ int parseCustomDelimiter(const char* numbers, char* delimiter) {
 // Function to parse the delimiter
 int parseDelimiter(const char* numbers, char* delimiter) {
     setDefaultDelimiters(delimiter);
-    return parseCustomDelimiter(numbers, delimiter);
+    if (hasCustomDelimiter(numbers)) {
+        return extractCustomDelimiter(numbers, delimiter);
+    }
+    return 0;
 }
 
 // Helper function to extract the next number from the string
