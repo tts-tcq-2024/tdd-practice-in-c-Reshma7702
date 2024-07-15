@@ -42,3 +42,15 @@ TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter) {
     int result = add(input);
     ASSERT_EQ(result, expectedresult);
 }
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter_EmptyString) {
+
+    const char* input = "";
+    add(input);
+   
+}
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter_1) {
+    int expectedresult = 3;
+    const char* input = "-1,2";
+    int result = add(input);
+    ASSERT_EQ(result, expectedresult);
+}
