@@ -3,21 +3,20 @@
 #include <string.h>
 #include <ctype.h>
 
-static int isCustomDelimiter(const char* numbers) {
+int isCustomDelimiter(const char* numbers) {
     return numbers[0] == '/' && numbers[1] == '/';
 }
 
-static int findEndOfLine(const char* str) {
+int findEndOfLine(const char* str) {
     const char* endOfLine = strchr(str, '\n');
     return endOfLine ? endOfLine - str : -1;
 }
 
-static void extractCustomDelimiter(const char* numbers, int endOfLinePos, char* delimiter) {
+void extractCustomDelimiter(const char* numbers, int endOfLinePos, char* delimiter) {
     strncpy(delimiter, numbers + 2, endOfLinePos - 2);
     delimiter[endOfLinePos - 2] = '\0';
 }
-
-static int parseDelimiter(const char* numbers, char* delimiter) {
+int parseDelimiter(const char* numbers, char* delimiter) {
     if (isCustomDelimiter(numbers)) {
         int endOfLinePos = findEndOfLine(numbers);
         if (endOfLinePos != -1) {
@@ -28,8 +27,7 @@ static int parseDelimiter(const char* numbers, char* delimiter) {
     strcpy(delimiter, ",");
     return 0;
 }
-
-static void extractNumberString(const char** str, const char* delimiters, char* numStr) {
+void extractNumberString(const char** str, const char* delimiters, char* numStr) {
     int numIndex = 0;
     while (**str && !strchr(delimiters, **str)) {
         if (isdigit(**str) || **str == '-') {
@@ -40,13 +38,12 @@ static void extractNumberString(const char** str, const char* delimiters, char* 
     numStr[numIndex] = '\0';
 }
 
-static void skipDelimiter(const char** str) {
+void skipDelimiter(const char** str) {
     if (**str) {
         (*str)++;
     }
 }
-
-static int getNextNumber(const char** str, const char* delimiters) {
+int getNextNumber(const char** str, const char* delimiters) {
     char numStr[50];
     extractNumberString(str, delimiters, numStr);
     skipDelimiter(str);
