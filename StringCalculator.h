@@ -8,7 +8,7 @@ int add(const char* numbers);
 
 #endif // STRINGCALCULATOR_H
 
-
+#include <Stringcalculator.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
