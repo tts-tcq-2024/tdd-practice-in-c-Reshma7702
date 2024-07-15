@@ -52,3 +52,9 @@ TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter_Negativevalues) {
     add(input);
 
 }
+TEST(StringCalculatorAddTests, DefaultDelimiterBranchCoverage) {
+    const char* input = "1,2\n3";
+    int expectedresult = 6;
+    int result = add(input);
+    ASSERT_EQ(result, expectedresult);
+}
