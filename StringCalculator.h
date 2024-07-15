@@ -2,9 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-// Helper function to parse delimiter from the input string
-int parseDelimiter(const char* numbers, char* delimiter) {
-    strcpy(delimiter, ",\n"); // Default delimiters
+// Helper function to set default delimiters
+void setDefaultDelimiters(char* delimiter) {
+    strcpy(delimiter, ",\n");
+}
+
+// Helper function to check and parse custom delimiter
+int parseCustomDelimiter(const char* numbers, char* delimiter) {
     if (numbers[0] == '/' && numbers[1] == '/') {
         const char* end = strchr(numbers, '\n');
         if (end != NULL) {
@@ -14,6 +18,12 @@ int parseDelimiter(const char* numbers, char* delimiter) {
         }
     }
     return 0;
+}
+
+// Function to parse the delimiter
+int parseDelimiter(const char* numbers, char* delimiter) {
+    setDefaultDelimiters(delimiter);
+    return parseCustomDelimiter(numbers, delimiter);
 }
 
 // Helper function to extract the next number from the string
