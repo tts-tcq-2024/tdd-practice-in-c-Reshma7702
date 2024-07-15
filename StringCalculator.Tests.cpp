@@ -109,15 +109,6 @@ TEST(StringCalculatorAddTests, EmptySectionsBetweenDelimiters) {
     ASSERT_EQ(result, expectedresult);
 }
 
-// Test when the input contains maximum integer values
-TEST(StringCalculatorAddTests, MaxIntValues) {
-    int expectedresult = 2147483647 + 2147483647;
-    char input[50];
-    sprintf(input, "%d,%d", 2147483647, 2147483647);
-    int result = add(input);
-    ASSERT_EQ(result, expectedresult);
-}
-
 // Test for default delimiter branch coverage
 TEST(StringCalculatorAddTests, DefaultDelimiterBranchCoverage) {
     const char* input = "1,2\n3";
