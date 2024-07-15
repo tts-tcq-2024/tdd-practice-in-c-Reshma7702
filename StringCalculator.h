@@ -2,19 +2,28 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Helper function to parse delimiter from the input string
 int parseDelimiter(const char* numbers, char* delimiter) {
-    // Simplified implementation for demo purposes
-    strcpy(delimiter, ";"); // Placeholder
-    return 0; // Placeholder
+    strcpy(delimiter, ",\n"); // Default delimiters
+    if (numbers[0] == '/' && numbers[1] == '/') {
+        const char* end = strchr(numbers, '\n');
+        if (end != NULL) {
+            strncpy(delimiter, numbers + 2, end - numbers - 2);
+            delimiter[end - numbers - 2] = '\0';
+            return end - numbers + 1;
+        }
+    }
+    return 0;
 }
 
+// Helper function to extract the next number from the string
 int getNextNumber(const char** ptr, const char* delimiters) {
-    // Simplified implementation for demo purposes
     int number = strtol(*ptr, (char**)ptr, 10);
     while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
     return number;
 }
 
+// Helper function to add a number to the sum or track it if it's negative
 void addNumber(int number, int* sum, int negatives[], int* negCount) {
     if (number < 0) {
         negatives[(*negCount)++] = number;
@@ -23,6 +32,7 @@ void addNumber(int number, int* sum, int negatives[], int* negCount) {
     }
 }
 
+// Helper function to sum the numbers and track negatives
 int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* negCount) {
     int sum = 0;
     while (*ptr) {
@@ -32,6 +42,7 @@ int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* ne
     return sum;
 }
 
+// Helper function to handle negative numbers
 void handleNegativeNumbers(int negatives[], int negCount) {
     if (negCount > 0) {
         printf("Negatives not allowed: ");
@@ -42,21 +53,20 @@ void handleNegativeNumbers(int negatives[], int negCount) {
     }
 }
 
+// Main add function
 int add(const char* numbers) {
     if (numbers == NULL || strlen(numbers) == 0) {
         return 0;
     }
 
-    char delimiter[50];
+    char delimiter[100];
     int offset = parseDelimiter(numbers, delimiter);
 
     const char* ptr = numbers + offset;
-    char delimiters[100] = ",\n";
-    strcat(delimiters, delimiter);
 
     int negatives[100];
     int negCount = 0;
-    int sum = sumNumbers(ptr, delimiters, negatives, &negCount);
+    int sum = sumNumbers(ptr, delimiter, negatives, &negCount);
 
     handleNegativeNumbers(negatives, negCount);
 
