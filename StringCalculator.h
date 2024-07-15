@@ -1,11 +1,3 @@
-#ifndef STRINGCALCULATOR_H
-#define STRINGCALCULATOR_H
-
-int add(const char* numbers);
-
-#endif // STRINGCALCULATOR_H
-
-#include "StringCalculator.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
