@@ -1,80 +1,15 @@
-#ifndef STRINGCALCULATOR_H
-#define STRINGCALCULATOR_H
-
-// Function declarations
-int parseDelimiter(const char* numbers, char* delimiter);
-int getNextNumber(const char** ptr, const char* delimiters);
-int add(const char* numbers);
-
-#endif // STRINGCALCULATOR_H
-
-#include "StringCalculator.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-
-int isCustomDelimiter(const char* numbers) {
-    return numbers[0] == '/' && numbers[1] == '/';
-}
-
-int findEndOfLine(const char* str) {
-    const char* endOfLine = strchr(str, '\n');
-    return endOfLine ? endOfLine - str : -1;
-}
-
-void extractCustomDelimiter(const char* numbers, int endOfLinePos, char* delimiter) {
-    strncpy(delimiter, numbers + 2, endOfLinePos - 2);
-    delimiter[endOfLinePos - 2] = '\0';
-}
-int parseDelimiter(const char* numbers, char* delimiter) {
-    if (isCustomDelimiter(numbers)) {
-        int endOfLinePos = findEndOfLine(numbers);
-        if (endOfLinePos != -1) {
-            extractCustomDelimiter(numbers, endOfLinePos, delimiter);
-            return endOfLinePos + 1;
-        }
-    }
-    strcpy(delimiter, ",");
-    return 0;
-}
-void extractNumberString(const char** str, const char* delimiters, char* numStr) {
-    int numIndex = 0;
-    while (**str && !strchr(delimiters, **str)) {
-        if (isdigit(**str) || **str == '-') {
-            numStr[numIndex++] = **str;
-        }
-        (*str)++;
-    }
-    numStr[numIndex] = '\0';
-}
-
-void skipDelimiter(const char** str) {
-    if (**str) {
-        (*str)++;
-    }
-}
-int getNextNumber(const char** str, const char* delimiters) {
-    char numStr[50];
-    extractNumberString(str, delimiters, numStr);
-    skipDelimiter(str);
-    return atoi(numStr);
-}
+#include <stdlib.h>
 
 int parseDelimiter(const char* numbers, char* delimiter) {
-    // Your implementation of parseDelimiter
-    // This function extracts the delimiter from the input string
-    // and returns the offset to the start of the numbers
-    // For simplicity, assuming a basic implementation here
+    // Simplified implementation for demo purposes
     strcpy(delimiter, ";"); // Placeholder
     return 0; // Placeholder
 }
 
 int getNextNumber(const char** ptr, const char* delimiters) {
-    // Your implementation of getNextNumber
-    // This function extracts the next number from ptr
-    // using the provided delimiters
-    // For simplicity, assuming a basic implementation here
+    // Simplified implementation for demo purposes
     int number = strtol(*ptr, (char**)ptr, 10);
     while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
     return number;
@@ -105,18 +40,16 @@ int add(const char* numbers) {
         }
     }
 
-    return sum;
-}
-
     if (negCount > 0) {
-        printf("negatives not allowed:");
+        // Handle negative numbers as required
+        // For example, printing the negative numbers
+        printf("Negatives not allowed: ");
         for (int i = 0; i < negCount; ++i) {
-            printf(" %d", negatives[i]);
+            printf("%d ", negatives[i]);
         }
         printf("\n");
-        return -1;
+        return -1; // Or handle negative numbers as needed
     }
 
     return sum;
 }
-
