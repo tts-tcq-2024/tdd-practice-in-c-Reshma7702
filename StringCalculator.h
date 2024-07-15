@@ -15,6 +15,21 @@ int getNextNumber(const char** ptr, const char* delimiters) {
     return number;
 }
 
+int sumNumbers(const char* ptr, const char* delimiters, int* negCount, int negatives[]) {
+    int sum = 0;
+
+    while (*ptr) {
+        int number = getNextNumber(&ptr, delimiters);
+        if (number < 0) {
+            negatives[(*negCount)++] = number;
+        } else if (number <= 1000) {
+            sum += number;
+        }
+    }
+
+    return sum;
+}
+
 void handleNegativeNumbers(int negatives[], int negCount) {
     if (negCount > 0) {
         printf("Negatives not allowed: ");
@@ -22,14 +37,6 @@ void handleNegativeNumbers(int negatives[], int negCount) {
             printf("%d ", negatives[i]);
         }
         printf("\n");
-    }
-}
-
-void updateSumAndNegatives(int number, int* sum, int negatives[], int* negCount) {
-    if (number < 0) {
-        negatives[(*negCount)++] = number;
-    } else if (number <= 1000) {
-        *sum += number;
     }
 }
 
@@ -45,16 +52,11 @@ int add(const char* numbers) {
     char delimiters[100] = ",\n";
     strcat(delimiters, delimiter);
 
-    int sum = 0;
     int negatives[100];
     int negCount = 0;
-
-    while (*ptr) {
-        int number = getNextNumber(&ptr, delimiters);
-        updateSumAndNegatives(number, &sum, negatives, &negCount);
-    }
+    int sum = sumNumbers(ptr, delimiters, &negCount, negatives);
 
     handleNegativeNumbers(negatives, negCount);
 
-    return negCount > 0 ? -1 : sum;
+    return (negCount > 0) ? -1 : sum;
 }
