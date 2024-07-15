@@ -69,9 +69,14 @@ void handleNegativeNumbers(int negatives[], int negCount) {
     }
 }
 
+// Helper function to check for empty input
+int isEmpty(const char* numbers) {
+    return numbers == NULL || strlen(numbers) == 0;
+}
+
 // Main add function
 int add(const char* numbers) {
-    if (numbers == NULL || strlen(numbers) == 0) {
+    if (isEmpty(numbers)) {
         return 0;
     }
 
