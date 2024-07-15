@@ -53,6 +53,25 @@ static int getNextNumber(const char** str, const char* delimiters) {
     return atoi(numStr);
 }
 
+int parseDelimiter(const char* numbers, char* delimiter) {
+    // Your implementation of parseDelimiter
+    // This function extracts the delimiter from the input string
+    // and returns the offset to the start of the numbers
+    // For simplicity, assuming a basic implementation here
+    strcpy(delimiter, ";"); // Placeholder
+    return 0; // Placeholder
+}
+
+int getNextNumber(const char** ptr, const char* delimiters) {
+    // Your implementation of getNextNumber
+    // This function extracts the next number from ptr
+    // using the provided delimiters
+    // For simplicity, assuming a basic implementation here
+    int number = strtol(*ptr, (char**)ptr, 10);
+    while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
+    return number;
+}
+
 int add(const char* numbers) {
     if (numbers == NULL || strlen(numbers) == 0) {
         return 0;
@@ -77,6 +96,9 @@ int add(const char* numbers) {
             sum += number;
         }
     }
+
+    return sum;
+}
 
     if (negCount > 0) {
         printf("negatives not allowed:");
