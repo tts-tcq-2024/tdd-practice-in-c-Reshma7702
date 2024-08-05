@@ -76,6 +76,48 @@ TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiterAtStart) {
     ASSERT_EQ(result, expected_result);
 }
 
+TEST(StringCalculatorAddTests, ExpectSumWithMultipleCustomDelimiters) {
+    int expected_result = 6;
+    const char* input = "//[;][#]\n1;2#3";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiterOfMoreThanOneCharacter) {
+    int expected_result = 6;
+    const char* input = "//[***]\n1***2***3";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+TEST(StringCalculatorAddTests, ExpectSumWithEmptyLinesBetweenNumbers) {
+    int expected_result = 6;
+    const char* input = "1\n\n2,3";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiterContainingSpecialCharacters) {
+    int expected_result = 6;
+    const char* input = "//[.]\n1.2.3";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+TEST(StringCalculatorAddTests, ExpectZeroWithEmptyCustomDelimiterLine) {
+    int expected_result = 0;
+    const char* input = "//\n";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiterSameAsDefaultDelimiter) {
+    int expected_result = 6;
+    const char* input = "//,\n1,2,3";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
