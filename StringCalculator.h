@@ -1,78 +1,82 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+#include <gtest/gtest.h>
+#include "StringCalculator.h"
 
-bool has_custom_delimiter(const char* input) {
-    return input[0] == '/' && input[1] == '/';
+TEST(StringCalculatorAddTests, ExpectZeroForEmptyInput) {
+    int expected_result = 0;
+    const char* input = "";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
 }
 
-void extract_custom_delimiter(const char* input, char* delimiter) {
-    const char* start = input + 2; // Skip over "//"
-    size_t length = strcspn(start, "\n"); // Find the position of the newline character
-    strncpy(delimiter, start, length); // Copy the delimiter
-    delimiter[length] = '\0'; // Null-terminate the delimiter
+TEST(StringCalculatorAddTests, ExpectZeroForSingleZero) {
+    int expected_result = 0;
+    const char* input = "0";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
 }
 
-void split_numbers(const char* input, const char* delimiters, int* numbers, int* count) {
-    char* copy = strdup(input);
-    char* token = strtok(copy, delimiters);
-    while (token) {
-        numbers[(*count)++] = atoi(token);
-        token = strtok(NULL, delimiters);
-    }
-    free(copy);
+TEST(StringCalculatorAddTests, ExpectSumForTwoNumbers) {
+    int expected_result = 3;
+    const char* input = "1,2";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
 }
 
-bool check_negatives(int* numbers, int count, char* message) {
-    bool has_negatives = false;
-    strcpy(message, "negatives not allowed: ");
-    for (int i = 0; i < count; i++) {
-        if (numbers[i] < 0) {
-            has_negatives = true;
-            char num_str[12];
-            snprintf(num_str, sizeof(num_str), "%d ", numbers[i]);
-            strcat(message, num_str);
-        }
-    }
-    return has_negatives;
+TEST(StringCalculatorAddTests, ExpectSumWithNewlineDelimiter) {
+    int expected_result = 6;
+    const char* input = "1\n2,3";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
 }
 
-int calculate_sum(int* numbers, int count) {
-    int sum = 0;
-    for (int i = 0; i < count; i++) {
-        if (numbers[i] <= 1000) {
-            sum += numbers[i];
-        }
-    }
-    return sum;
+TEST(StringCalculatorAddTests, IgnoreNumbersGreaterThan1000) {
+    int expected_result = 1;
+    const char* input = "1,1001";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
 }
 
-int parse_and_calculate(const char* input, const char* delimiters) {
-    int numbers[1000];
-    int count = 0;
-    split_numbers(input, delimiters, numbers, &count);
-
-    char message[256];
-    if (check_negatives(numbers, count, message)) {
-        fprintf(stderr, "%s\n", message);
-        exit(EXIT_FAILURE);
-    }
-
-    return calculate_sum(numbers, count);
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter) {
+    int expected_result = 3;
+    const char* input = "//;\n1;2";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
 }
 
-int add(const char* input) {
-    if (*input == '\0') {
-        return 0;
-    }
+TEST(StringCalculatorAddTests, ExpectExceptionForNegativeNumbers) {
+    const char* input = "1,-3,-4";
+    ASSERT_EXIT(add(input), ::testing::ExitedWithCode(EXIT_FAILURE), "negatives not allowed: -3 -4 ");
+}
 
-    char delimiter[10] = ",\n";
-    const char* numbers_start = input;
-    if (has_custom_delimiter(input)) {
-        extract_custom_delimiter(input, delimiter);
-        numbers_start = strchr(input, '\n') + 1; // Move past the delimiter line
-    }
+TEST(StringCalculatorAddTests, ExpectSumWithEmptyString) {
+    int expected_result = 0;
+    const char* input = "";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
 
-    return parse_and_calculate(numbers_start, delimiter);
+TEST(StringCalculatorAddTests, ExpectSumWithSingleNumber) {
+    int expected_result = 5;
+    const char* input = "5";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+TEST(StringCalculatorAddTests, ExpectSumWithMixedDelimiters) {
+    int expected_result = 6;
+    const char* input = "1\n2,3";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiterAtStart) {
+    int expected_result = 0;
+    const char* input = "/2";
+    int result = add(input);
+    ASSERT_EQ(result, expected_result);
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
