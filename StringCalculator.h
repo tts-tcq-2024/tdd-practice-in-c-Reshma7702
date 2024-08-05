@@ -1,26 +1,27 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdexcept>
+#include <stdbool.h>
 
-int is_empty_string(const char* input) {
+bool is_empty_string(const char* input) {
     return (input == NULL || input[0] == '\0');
 }
 
 void extract_custom_delimiter(const char* input, char* delimiter) {
-    int i = 2;           // Start after the initial delimiter //
-    delimiter[0] = '\0';
+    int i = 2; // Start after the initial delimiter //
+    int j = 0;
     while (input[i] != '\0' && input[i] != '\n') {
-        strncat(delimiter, &input[i], 1);
-        i++;
+        delimiter[j++] = input[i++];
     }
+    delimiter[j] = '\0';
 }
 
 void has_custom_delimiter(const char* input, char* delimiter) {
-    if (input[0] == '/' && input[1] == '/')
+    if (input[0] == '/' && input[1] == '/') {
         extract_custom_delimiter(input, delimiter);
-    else
+    } else {
         strcpy(delimiter, ",\n");
+    }
 }
 
 int value_less_than_thousand(int value) {
@@ -28,8 +29,9 @@ int value_less_than_thousand(int value) {
 }
 
 void check_negative_values(int value) {
-    if (value<0) {
-        throw std::runtime_error("negatives not allowed");
+    if (value < 0) {
+        fprintf(stderr, "Error: negatives not allowed\n");
+        exit(EXIT_FAILURE);
     }
 }
 
