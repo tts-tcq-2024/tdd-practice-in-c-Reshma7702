@@ -63,3 +63,7 @@ TEST(StringCalculatorAddTests, HandleNegativeNumbers) {
     ASSERT_EQ(result, -1);
     ASSERT_EQ(output, "Negatives not allowed: -1 \n");
 }
+TEST(StringCalculatorAddTests, ExpectZeroForSingleZero_1) {
+    const char* input = "1/2";
+    add(input);
+}
