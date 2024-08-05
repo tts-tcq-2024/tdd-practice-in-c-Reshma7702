@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 // Helper function to set default delimiters
 void setDefaultDelimiters(char* delimiter) {
     strcpy(delimiter, ",\n");
@@ -35,6 +34,7 @@ int parseDelimiter(const char* numbers, char* delimiter) {
 
 // Helper function to extract the next number from the string
 int getNextNumber(const char** ptr, const char* delimiters) {
+    while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
     int number = strtol(*ptr, (char**)ptr, 10);
     while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
     return number;
@@ -54,6 +54,11 @@ int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* ne
     int sum = 0;
     while (*ptr) {
         int number = getNextNumber(&ptr, delimiters);
+        if (*ptr != '\0' && !strchr(delimiters, *ptr) && (*ptr < '0' || *ptr > '9')) {
+            // Skip invalid characters that are not part of the delimiters or digits
+            ptr++;
+            continue;
+        }
         addNumber(number, &sum, negatives, negCount);
     }
     return sum;
@@ -93,4 +98,10 @@ int add(const char* numbers) {
     handleNegativeNumbers(negatives, negCount);
 
     return (negCount > 0) ? -1 : sum;
+}
+
+int main() {
+    const char* input = "1/2";
+    printf("Result: %d\n", add(input));
+    return 0;
 }
