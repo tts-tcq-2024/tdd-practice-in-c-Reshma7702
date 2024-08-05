@@ -1,7 +1,15 @@
+#include "StringCalculator.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
+
+#ifndef STRING_CALCULATOR_H
+#define STRING_CALCULATOR_H
+
+int add(const char* numbers);
+
+#endif // STRING_CALCULATOR_H
 
 // Helper function to set default delimiters
 void setDefaultDelimiters(char* delimiter) {
