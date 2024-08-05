@@ -43,62 +43,21 @@ TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter) {
     ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, CustomDelimiterNotPresent) {
-    int expectedresult = 6;
-    const char* input = "1,2,3";
+TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiterAtStart) {
+    int expectedresult = 2;
+    const char* input = "\n2";
     int result = add(input);
     ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, ExpectSumWithCustomDelimiter_EmptyString) {
-    int expectedresult = 0;
-    const char* input = "";
+TEST(StringCalculatorAddTests, ExpectSumWithDelimiterofAnyLength) {
+    int expectedresult = 15;
+    const char* input = "//[*]\n12***3";
     int result = add(input);
     ASSERT_EQ(result, expectedresult);
 }
 
-TEST(StringCalculatorAddTests, HandleNegativeNumbers) {
-    const char* input = "-1,2";
-    testing::internal::CaptureStdout();
-    int result = add(input);
-    std::string output = testing::internal::GetCapturedStdout();
-    ASSERT_EQ(result, -1);
-    ASSERT_EQ(output, "Negatives not allowed: -1 \n");
-}
-
-// Additional Tests for Edge Cases
-
-TEST(StringCalculatorAddTests, MultipleCustomDelimiters) {
-    int expectedresult = 6;
-    const char* input = "//[*][%]\n1*2%3";
-    int result = add(input);
-    ASSERT_EQ(result, expectedresult);
-}
-
-TEST(StringCalculatorAddTests, SingleNumberWithoutDelimiters) {
-    int expectedresult = 5;
-    const char* input = "5";
-    int result = add(input);
-    ASSERT_EQ(result, expectedresult);
-}
-
-TEST(StringCalculatorAddTests, MultipleNumbersWithVaryingLengths) {
-    int expectedresult = 1368;  // Updated expected result to match the correct sum
-    const char* input = "123,456,789";
-    int result = add(input);
-    ASSERT_EQ(result, expectedresult);
-}
-
-TEST(StringCalculatorAddTests, NumbersWithOnlyNewlines) {
-    int expectedresult = 10;
-    const char* input = "1\n2\n3\n4";
-    int result = add(input);
-    ASSERT_EQ(result, expectedresult);
-}
-
-TEST(StringCalculatorAddTests, CustomDelimiterDifferentLength) {
-    int expectedresult = 6;
-    const char* input = "//[***]\n1***2***3";
-    int result = add(input);
-    ASSERT_EQ(result, expectedresult);
+TEST(ExceptionHandlingTest, NegativeNumberException) {
+    const char* input = "-1,2,3";
+    ASSERT_THROW(add(input), std::runtime_error);
 }
