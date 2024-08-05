@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 extern "C" {
-    #include "StringCalculator.c"
+    #include "StringCalculator.h"
 }
 
 TEST(StringCalculatorAddTests, ExpectZeroForEmptyInput) {
