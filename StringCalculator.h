@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+
 // Helper function to set default delimiters
 void setDefaultDelimiters(char* delimiter) {
     strcpy(delimiter, ",\n");
@@ -32,44 +33,19 @@ int parseDelimiter(const char* numbers, char* delimiter) {
     return 0;
 }
 
-// Helper function to skip delimiters
-void skipDelimiters(const char** ptr, const char* delimiters) {
-    while (**ptr && strchr(delimiters, **ptr)) {
-        (*ptr)++;
-    }
-}
-
-// Helper function to check if the current character is a valid digit or delimiter
-int isValidCharacter(const char* ptr, const char* delimiters) {
-    return strchr(delimiters, *ptr) || (*ptr >= '0' && *ptr <= '9');
-}
-
 // Helper function to extract the next number from the string
 int getNextNumber(const char** ptr, const char* delimiters) {
-    skipDelimiters(ptr, delimiters);
     int number = strtol(*ptr, (char**)ptr, 10);
-    skipDelimiters(ptr, delimiters);
+    while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
     return number;
 }
 
-// Helper function to add a number to the sum
-void addToSum(int number, int* sum) {
-    if (number <= 1000) {
-        *sum += number;
-    }
-}
-
-// Helper function to track a negative number
-void trackNegative(int number, int negatives[], int* negCount) {
-    negatives[(*negCount)++] = number;
-}
-
-// Helper function to process each number
-void processNumber(int number, int* sum, int negatives[], int* negCount) {
+// Helper function to add a number to the sum or track it if it's negative
+void addNumber(int number, int* sum, int negatives[], int* negCount) {
     if (number < 0) {
-        trackNegative(number, negatives, negCount);
-    } else {
-        addToSum(number, sum);
+        negatives[(*negCount)++] = number;
+    } else if (number <= 1000) {
+        *sum += number;
     }
 }
 
@@ -77,12 +53,8 @@ void processNumber(int number, int* sum, int negatives[], int* negCount) {
 int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* negCount) {
     int sum = 0;
     while (*ptr) {
-        if (!isValidCharacter(ptr, delimiters)) {
-            ptr++;
-            continue;
-        }
         int number = getNextNumber(&ptr, delimiters);
-        processNumber(number, &sum, negatives, negCount);
+        addNumber(number, &sum, negatives, negCount);
     }
     return sum;
 }
@@ -121,10 +93,4 @@ int add(const char* numbers) {
     handleNegativeNumbers(negatives, negCount);
 
     return (negCount > 0) ? -1 : sum;
-}
-
-int main() {
-    const char* input = "1/2";
-    printf("Result: %d\n", add(input));
-    return 0;
 }
