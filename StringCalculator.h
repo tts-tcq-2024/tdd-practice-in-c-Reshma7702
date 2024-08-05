@@ -32,16 +32,23 @@ int parseDelimiter(const char* numbers, char* delimiter) {
     return 0;
 }
 
+// Helper function to skip delimiters
+void skipDelimiters(const char** ptr, const char* delimiters) {
+    while (**ptr && strchr(delimiters, **ptr)) {
+        (*ptr)++;
+    }
+}
+
 // Helper function to extract the next number from the string
 int getNextNumber(const char** ptr, const char* delimiters) {
-    while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
+    skipDelimiters(ptr, delimiters);
     int number = strtol(*ptr, (char**)ptr, 10);
-    while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
+    skipDelimiters(ptr, delimiters);
     return number;
 }
 
 // Helper function to add a number to the sum or track it if it's negative
-void addNumber(int number, int* sum, int negatives[], int* negCount) {
+void processNumber(int number, int* sum, int negatives[], int* negCount) {
     if (number < 0) {
         negatives[(*negCount)++] = number;
     } else if (number <= 1000) {
@@ -55,11 +62,10 @@ int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* ne
     while (*ptr) {
         int number = getNextNumber(&ptr, delimiters);
         if (*ptr != '\0' && !strchr(delimiters, *ptr) && (*ptr < '0' || *ptr > '9')) {
-            // Skip invalid characters that are not part of the delimiters or digits
             ptr++;
             continue;
         }
-        addNumber(number, &sum, negatives, negCount);
+        processNumber(number, &sum, negatives, negCount);
     }
     return sum;
 }
