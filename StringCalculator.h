@@ -8,10 +8,10 @@ bool has_custom_delimiter(const char* input) {
 }
 
 void extract_custom_delimiter(const char* input, char* delimiter) {
- const char* start = input + 2; // Skip over "//"
- size_t length = strcspn(start, "\n"); // Find the position of the newline character
- strncpy(delimiter, start, length); // Copy the delimiter
- delimiter[length] = '\0'; // Null-terminate the delimiter
+    const char* start = input + 2; // Skip over "//"
+    size_t length = strcspn(start, "\n"); // Find the position of the newline character
+    strncpy(delimiter, start, length); // Copy the delimiter
+    delimiter[length] = '\0'; // Null-terminate the delimiter
 }
 
 void split_numbers(const char* input, const char* delimiters, int* numbers, int* count) {
@@ -55,7 +55,8 @@ int parse_and_calculate(const char* input, const char* delimiters) {
 
     char message[256];
     if (check_negatives(numbers, count, message)) {
-        return -1; // Indicate an error
+        fprintf(stderr, "%s\n", message);
+        exit(EXIT_FAILURE);
     }
 
     return calculate_sum(numbers, count);
@@ -67,9 +68,11 @@ int add(const char* input) {
     }
 
     char delimiter[10] = ",\n";
+    const char* numbers_start = input;
     if (has_custom_delimiter(input)) {
-       extract_custom_delimiter(input, delimiter);
+        extract_custom_delimiter(input, delimiter);
+        numbers_start = strchr(input, '\n') + 1; // Move past the delimiter line
     }
 
-    return parse_and_calculate(input, delimiter);
+    return parse_and_calculate(numbers_start, delimiter);
 }
