@@ -1,104 +1,58 @@
-#include "StringCalculator.h"
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdexcept>
 
-
-#ifndef STRING_CALCULATOR_H
-#define STRING_CALCULATOR_H
-
-int add(const char* numbers);
-
-#endif // STRING_CALCULATOR_H
-
-// Helper function to set default delimiters
-void setDefaultDelimiters(char* delimiter) {
-    strcpy(delimiter, ",\n");
+int is_empty_string(const char* input) {
+    return (input == NULL || input[0] == '\0');
 }
 
-// Helper function to check if custom delimiter is present
-int hasCustomDelimiter(const char* numbers) {
-    return numbers[0] == '/' && numbers[1] == '/';
-}
-
-// Helper function to extract custom delimiter
-int extractCustomDelimiter(const char* numbers, char* delimiter) {
-    const char* end = strchr(numbers, '\n');
-    if (end != NULL) {
-        strncpy(delimiter, numbers + 2, end - numbers - 2);
-        delimiter[end - numbers - 2] = '\0';
-        return end - numbers + 1;
-    }
-    return 0;
-}
-
-// Function to parse the delimiter
-int parseDelimiter(const char* numbers, char* delimiter) {
-    setDefaultDelimiters(delimiter);
-    if (hasCustomDelimiter(numbers)) {
-        return extractCustomDelimiter(numbers, delimiter);
-    }
-    return 0;
-}
-
-// Helper function to extract the next number from the string
-int getNextNumber(const char** ptr, const char* delimiters) {
-    int number = strtol(*ptr, (char**)ptr, 10);
-    while (**ptr && strchr(delimiters, **ptr)) (*ptr)++;
-    return number;
-}
-
-// Helper function to add a number to the sum or track it if it's negative
-void addNumber(int number, int* sum, int negatives[], int* negCount) {
-    if (number < 0) {
-        negatives[(*negCount)++] = number;
-    } else if (number <= 1000) {
-        *sum += number;
+void extract_custom_delimiter(const char* input, char* delimiter) {
+    int i = 2;           // Start after the initial delimiter //
+    delimiter[0] = '\0';
+    while (input[i] != '\0' && input[i] != '\n') {
+        strncat(delimiter, &input[i], 1);
+        i++;
     }
 }
 
-// Helper function to sum the numbers and track negatives
-int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* negCount) {
+void has_custom_delimiter(const char* input, char* delimiter) {
+    if (input[0] == '/' && input[1] == '/')
+        extract_custom_delimiter(input, delimiter);
+    else
+        strcpy(delimiter, ",\n");
+}
+
+int value_less_than_thousand(int value) {
+    return (value < 1000) ? value : 0;
+}
+
+void check_negative_values(int value) {
+    if (value<0) {
+        throw std::runtime_error("negatives not allowed");
+    }
+}
+
+int process_input(const char* input, const char* delimiter) {
+    char* duplicate_input = strdup(input);
     int sum = 0;
-    while (*ptr) {
-        int number = getNextNumber(&ptr, delimiters);
-        addNumber(number, &sum, negatives, negCount);
+    char* input_segment = strtok(duplicate_input, delimiter);
+    while (input_segment != NULL) {
+        int value = atoi(input_segment);
+        check_negative_values(value);
+        sum += value_less_than_thousand(value);
+        input_segment = strtok(NULL, delimiter);
     }
+    free(duplicate_input);
     return sum;
 }
 
-// Helper function to handle negative numbers
-void handleNegativeNumbers(int negatives[], int negCount) {
-    if (negCount > 0) {
-        printf("Negatives not allowed: ");
-        for (int i = 0; i < negCount; ++i) {
-            printf("%d ", negatives[i]);
-        }
-        printf("\n");
-    }
-}
-
-// Helper function to check for empty input
-int isEmpty(const char* numbers) {
-    return numbers == NULL || strlen(numbers) == 0;
-}
-
-// Main add function
-int add(const char* numbers) {
-    if (isEmpty(numbers)) {
+int add(const char* input) {
+    char delimiter[20];
+    if (is_empty_string(input)) {
         return 0;
     }
-
-    char delimiter[100];
-    int offset = parseDelimiter(numbers, delimiter);
-
-    const char* ptr = numbers + offset;
-
-    int negatives[100];
-    int negCount = 0;
-    int sum = sumNumbers(ptr, delimiter, negatives, &negCount);
-
-    handleNegativeNumbers(negatives, negCount);
-
-    return (negCount > 0) ? -1 : sum;
+    has_custom_delimiter(input, delimiter);
+    int sum = process_input(input, delimiter);
+    return sum;
 }
