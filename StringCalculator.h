@@ -39,6 +39,11 @@ void skipDelimiters(const char** ptr, const char* delimiters) {
     }
 }
 
+// Helper function to check if the current character is a valid digit or delimiter
+int isValidCharacter(const char* ptr, const char* delimiters) {
+    return strchr(delimiters, *ptr) || (*ptr >= '0' && *ptr <= '9');
+}
+
 // Helper function to extract the next number from the string
 int getNextNumber(const char** ptr, const char* delimiters) {
     skipDelimiters(ptr, delimiters);
@@ -47,12 +52,24 @@ int getNextNumber(const char** ptr, const char* delimiters) {
     return number;
 }
 
-// Helper function to add a number to the sum or track it if it's negative
+// Helper function to add a number to the sum
+void addToSum(int number, int* sum) {
+    if (number <= 1000) {
+        *sum += number;
+    }
+}
+
+// Helper function to track a negative number
+void trackNegative(int number, int negatives[], int* negCount) {
+    negatives[(*negCount)++] = number;
+}
+
+// Helper function to process each number
 void processNumber(int number, int* sum, int negatives[], int* negCount) {
     if (number < 0) {
-        negatives[(*negCount)++] = number;
-    } else if (number <= 1000) {
-        *sum += number;
+        trackNegative(number, negatives, negCount);
+    } else {
+        addToSum(number, sum);
     }
 }
 
@@ -60,11 +77,11 @@ void processNumber(int number, int* sum, int negatives[], int* negCount) {
 int sumNumbers(const char* ptr, const char* delimiters, int negatives[], int* negCount) {
     int sum = 0;
     while (*ptr) {
-        int number = getNextNumber(&ptr, delimiters);
-        if (*ptr != '\0' && !strchr(delimiters, *ptr) && (*ptr < '0' || *ptr > '9')) {
+        if (!isValidCharacter(ptr, delimiters)) {
             ptr++;
             continue;
         }
+        int number = getNextNumber(&ptr, delimiters);
         processNumber(number, &sum, negatives, negCount);
     }
     return sum;
