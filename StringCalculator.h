@@ -67,7 +67,7 @@ int add(const char* input) {
         return 0;
     }
 
-    char delimiter[10] = ",\n";
+    char delimiter[100] = ",\n";
     const char* numbers_start = input;
     if (has_custom_delimiter(input)) {
         extract_custom_delimiter(input, delimiter);
@@ -76,4 +76,3 @@ int add(const char* input) {
 
     return parse_and_calculate(numbers_start, delimiter);
 }
-
