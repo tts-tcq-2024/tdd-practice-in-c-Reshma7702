@@ -1,60 +1,75 @@
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 
-bool is_empty_string(const char* input) {
-    return (input == NULL || input[0] == '\0');
+bool has_custom_delimiter(const char* input) {
+    return input[0] == '/' && input[1] == '/';
 }
 
 void extract_custom_delimiter(const char* input, char* delimiter) {
-    int i = 2; // Start after the initial delimiter //
-    int j = 0;
-    while (input[i] != '\0' && input[i] != '\n') {
-        delimiter[j++] = input[i++];
+ const char* start = input + 2; // Skip over "//"
+ size_t length = strcspn(start, "\n"); // Find the position of the newline character
+ strncpy(delimiter, start, length); // Copy the delimiter
+ delimiter[length] = '\0'; // Null-terminate the delimiter
+}
+
+void split_numbers(const char* input, const char* delimiters, int* numbers, int* count) {
+    char* copy = strdup(input);
+    char* token = strtok(copy, delimiters);
+    while (token) {
+        numbers[(*count)++] = atoi(token);
+        token = strtok(NULL, delimiters);
     }
-    delimiter[j] = '\0';
+    free(copy);
 }
 
-void has_custom_delimiter(const char* input, char* delimiter) {
-    if (input[0] == '/' && input[1] == '/') {
-        extract_custom_delimiter(input, delimiter);
-    } else {
-        strcpy(delimiter, ",\n");
+bool check_negatives(int* numbers, int count, char* message) {
+    bool has_negatives = false;
+    strcpy(message, "negatives not allowed: ");
+    for (int i = 0; i < count; i++) {
+        if (numbers[i] < 0) {
+            has_negatives = true;
+            char num_str[12];
+            snprintf(num_str, sizeof(num_str), "%d ", numbers[i]);
+            strcat(message, num_str);
+        }
     }
+    return has_negatives;
 }
 
-int value_less_than_thousand(int value) {
-    return (value < 1000) ? value : 0;
-}
-
-void check_negative_values(int value) {
-    if (value < 0) {
-        fprintf(stderr, "Error: negatives not allowed\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-int process_input(const char* input, const char* delimiter) {
-    char* duplicate_input = strdup(input);
+int calculate_sum(int* numbers, int count) {
     int sum = 0;
-    char* input_segment = strtok(duplicate_input, delimiter);
-    while (input_segment != NULL) {
-        int value = atoi(input_segment);
-        check_negative_values(value);
-        sum += value_less_than_thousand(value);
-        input_segment = strtok(NULL, delimiter);
+    for (int i = 0; i < count; i++) {
+        if (numbers[i] <= 1000) {
+            sum += numbers[i];
+        }
     }
-    free(duplicate_input);
     return sum;
+}
+
+int parse_and_calculate(const char* input, const char* delimiters) {
+    int numbers[1000];
+    int count = 0;
+    split_numbers(input, delimiters, numbers, &count);
+
+    char message[256];
+    if (check_negatives(numbers, count, message)) {
+        return -1; // Indicate an error
+    }
+
+    return calculate_sum(numbers, count);
 }
 
 int add(const char* input) {
-    char delimiter[20];
-    if (is_empty_string(input)) {
+    if (*input == '\0') {
         return 0;
     }
-    has_custom_delimiter(input, delimiter);
-    int sum = process_input(input, delimiter);
-    return sum;
+
+    char delimiter[10] = ",\n";
+    if (has_custom_delimiter(input)) {
+       extract_custom_delimiter(input, delimiter);
+    }
+
+    return parse_and_calculate(input, delimiter);
 }
