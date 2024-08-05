@@ -83,7 +83,7 @@ TEST(StringCalculatorAddTests, SingleNumberWithoutDelimiters) {
 }
 
 TEST(StringCalculatorAddTests, MultipleNumbersWithVaryingLengths) {
-    int expectedresult = 1236;
+    int expectedresult = 1368;  // Updated expected result to match the correct sum
     const char* input = "123,456,789";
     int result = add(input);
     ASSERT_EQ(result, expectedresult);
